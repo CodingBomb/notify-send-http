@@ -48,7 +48,7 @@ func parseFlags() []string {
 	// so here we need to reorganize things
 	args := []string{}
 	for index, arg := range os.Args {
-		if strings.HasPrefix(arg, "-") && ! strings.HasPrefix(arg, "--") {
+		if strings.HasPrefix(arg, "-") {
 			args = append([]string{arg, os.Args[index+1]}, args...)
 		} else if index > 0 && ! strings.HasPrefix(os.Args[index-1], "-") {
 			args = append(args, arg)
@@ -57,6 +57,7 @@ func parseFlags() []string {
 
 	os.Args = append([]string{os.Args[0]}, args...)
 	flag.StringVar(&icon, "i", icon, "Path to icon")
+	flag.StringVar(&icon, "icon", icon, "Path to icon")
 	flag.String("u", "", "")
 	flag.String("a", "", "")
 	flag.String("c", "", "")
