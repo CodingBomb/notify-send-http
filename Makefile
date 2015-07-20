@@ -1,5 +1,13 @@
 .PHONY: gox
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	OS = linux
+endif
+ifeq ($(UNAME_S),Darwin)
+	OS = darwin
+endif
+
 default: xcompile
 
 gox:
@@ -12,14 +20,15 @@ xcompile: client/main.go server/main.go
 	chmod +x build/*
 
 PORT = 13579
+
 listen:
-	PORT=${PORT} ./build/notify-server-darwin_amd64
+	PORT=${PORT} ./build/notify-server-${OS}_amd64 \
 
 listen-d:
-	PORT=${PORT} nohup ./build/notify-server-darwin_amd64 > listen.log 2>&1 &
+	PORT=${PORT} nohup ./build/notify-server-${OS}_amd64 > listen.log 2>&1 &
 
 kill:
-	kill $(shell ps aux | grep notify-server-darwin_amd64 | grep -v grep | awk '{print $$2}')
+	kill $(shell ps aux | grep notify-server-${OS}_amd64 | grep -v grep | awk '{print $$2}')
 
 test:
-	NOTIFY_SEND_URL="http://127.0.0.1:${PORT}" ./build/notify-client-darwin_amd64 "Test Notification" "Nice! This is a test notification." --icon icon.png
+	NOTIFY_SEND_URL="http://127.0.0.1:${PORT}" ./build/notify-client-${OS}_amd64 "Test Notification" "Nice! This is a test notification." --icon icon.png
